@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+/* Design tokens: https://tailwindcss.com/docs/theme */
+@theme {
+  --color-brand: oklch(55% 0.2 250deg);
+  --color-brand-dark: oklch(40% 0.18 250deg);
+}
