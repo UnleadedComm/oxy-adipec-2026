@@ -1,0 +1,144 @@
+@font-face {
+    font-family: 'Spezia Wide';
+    src: url('SpeziaWide-Thin.woff2') format('woff2'),
+        url('SpeziaWide-Thin.woff') format('woff');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spezia Wide';
+    src: url('SpeziaWide-ThinItalic.woff2') format('woff2'),
+        url('SpeziaWide-ThinItalic.woff') format('woff');
+    font-weight: 100;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spezia Wide';
+    src: url('SpeziaWide-SemiBoldItalic.woff2') format('woff2'),
+        url('SpeziaWide-SemiBoldItalic.woff') format('woff');
+    font-weight: 600;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spezia Wide';
+    src: url('SpeziaWide-SemiBold.woff2') format('woff2'),
+        url('SpeziaWide-SemiBold.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spezia Wide';
+    src: url('SpeziaWide-RegularItalic.woff2') format('woff2'),
+        url('SpeziaWide-RegularItalic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spezia Wide';
+    src: url('SpeziaWide-Regular.woff2') format('woff2'),
+        url('SpeziaWide-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spezia Wide';
+    src: url('SpeziaWide-MediumItalic.woff2') format('woff2'),
+        url('SpeziaWide-MediumItalic.woff') format('woff');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spezia Wide';
+    src: url('SpeziaWide-Medium.woff2') format('woff2'),
+        url('SpeziaWide-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spezia Wide';
+    src: url('SpeziaWide-LightItalic.woff2') format('woff2'),
+        url('SpeziaWide-LightItalic.woff') format('woff');
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spezia Wide';
+    src: url('SpeziaWide-Light.woff2') format('woff2'),
+        url('SpeziaWide-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spezia Wide Book';
+    src: url('SpeziaWide-BookItalic.woff2') format('woff2'),
+        url('SpeziaWide-BookItalic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spezia Wide Book';
+    src: url('SpeziaWide-Book.woff2') format('woff2'),
+        url('SpeziaWide-Book.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spezia Wide';
+    src: url('SpeziaWide-BoldItalic.woff2') format('woff2'),
+        url('SpeziaWide-BoldItalic.woff') format('woff');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spezia Wide';
+    src: url('SpeziaWide-Bold.woff2') format('woff2'),
+        url('SpeziaWide-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spezia Wide';
+    src: url('SpeziaWide-BlackItalic.woff2') format('woff2'),
+        url('SpeziaWide-BlackItalic.woff') format('woff');
+    font-weight: 900;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spezia Wide';
+    src: url('SpeziaWide-Black.woff2') format('woff2'),
+        url('SpeziaWide-Black.woff') format('woff');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+

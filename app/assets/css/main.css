@@ -1,7 +1,40 @@
 @import "tailwindcss";
+@import "./fonts.css";
 
 /* Design tokens: https://tailwindcss.com/docs/theme */
 @theme {
-  --color-brand: oklch(55% 0.2 250deg);
-  --color-brand-dark: oklch(40% 0.18 250deg);
+  /* Typography: font-sans (Spezia), font-wide (Spezia Wide), font-mono (Spezia Mono) */
+  --font-sans: "Spezia", ui-sans-serif, system-ui, sans-serif;
+  --font-wide: "Spezia Wide", "Spezia", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Spezia Mono", ui-monospace, sfmono-regular, menlo, monospace;
+
+  /* Spezia ships a Book cut between Light and Regular: font-book */
+  --font-weight-book: 350;
+  --breakpoint-*: initial;
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 90rem;
+  --color-oxy-blue: #00539b;
+  --color-oxy-red: #b5121b;
+  --color-midnight-blue: #002e4d;
+  --color-day-blue: #1d83de;
+  --color-morning-blue: #a4ddf2;
+  --color-navy: #00304d;
+  --color-mid-blue: #0082ca;
+  --color-ocean-aqua: #009e99;
+  --color-forest-green: #7a9c00;
+  --color-sunrise-orange: #ff9e1b;
+  --color-aluminum-gray: #98999b;
+  --color-slate-gray: #2b2d30;
+  --color-light-gray: #f5f5f5;
+  --color-med-gray: #d9d9d9;
+}
+
+/* Paint the html element too so overscroll and load flashes match the app background. */
+@layer base {
+  html {
+    background-color: var(--color-oxy-blue);
+  }
 }

@@ -1,0 +1,72 @@
+@font-face {
+    font-family: 'Spezia Mono';
+    src: url('SpeziaMono-Thin.woff2') format('woff2'),
+        url('SpeziaMono-Thin.woff') format('woff');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spezia Mono';
+    src: url('SpeziaMono-SemiBold.woff2') format('woff2'),
+        url('SpeziaMono-SemiBold.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spezia Mono';
+    src: url('SpeziaMono-Regular.woff2') format('woff2'),
+        url('SpeziaMono-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spezia Mono';
+    src: url('SpeziaMono-Medium.woff2') format('woff2'),
+        url('SpeziaMono-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spezia Mono';
+    src: url('SpeziaMono-Light.woff2') format('woff2'),
+        url('SpeziaMono-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spezia Mono Book';
+    src: url('SpeziaMono-Book.woff2') format('woff2'),
+        url('SpeziaMono-Book.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spezia Mono Mono';
+    src: url('SpeziaMono-Bold.woff2') format('woff2'),
+        url('SpeziaMono-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Spezia Mono';
+    src: url('SpeziaMono-Black.woff2') format('woff2'),
+        url('SpeziaMono-Black.woff') format('woff');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
