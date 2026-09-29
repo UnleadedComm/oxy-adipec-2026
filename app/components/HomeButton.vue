@@ -1,0 +1,73 @@
+<script setup lang="ts">
+/**
+ * Fixed "Home" button, top-right. Hidden on the index page.
+ *
+ * Label colour resolves in this order:
+ *   1. `textColor` prop
+ *   2. `definePageMeta({ homeTextColor: '...' })` on the current page
+ *   3. white
+ */
+const props = withDefaults(defineProps<{
+  /** Colour of the "Home" label. Any CSS colour, e.g. '#fff' or 'var(--color-oxy-red)'. */
+  textColor?: string
+  /** Stroke colour of the house icon inside the white circle. */
+  iconColor?: string
+}>(), {
+  textColor: undefined,
+  iconColor: '#215295',
+})
+
+const route = useRoute()
+
+const isHome = computed(() => route.path === '/')
+const resolvedTextColor = computed(
+  () => props.textColor ?? route.meta.homeTextColor ?? '#fff',
+)
+</script>
+
+<template>
+  <NuxtLink
+    v-if="!isHome"
+    to="/"
+    class="home-button fixed top-22 right-16 z-50 flex items-center gap-3 font-medium"
+    :style="{ '--home-button-text': resolvedTextColor, '--home-button-icon': iconColor }"
+  >
+    <span class="flex size-18 shrink-0 items-center justify-center rounded-full bg-white">
+      <svg
+        class="home-button__icon size-10"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 61 57"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          d="M8.0415 22.6147V52.268C8.0415 52.8012 8.25331 53.3125 8.63033 53.6896C9.00735 54.0666 9.5187 54.2784 10.0519 54.2784H22.1142V37.1901C22.1142 36.3903 22.4319 35.6233 22.9975 35.0577C23.563 34.4922 24.33 34.1745 25.1298 34.1745H35.1818C35.9815 34.1745 36.7486 34.4922 37.3141 35.0577C37.8796 35.6233 38.1973 36.3903 38.1973 37.1901V54.2784H50.2597C50.7929 54.2784 51.3042 54.0666 51.6812 53.6896C52.0583 53.3125 52.2701 52.8012 52.2701 52.268V22.6147"
+          stroke="currentColor"
+          stroke-width="4.02078"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M58.3012 28.1432L31.524 2.51078C30.8958 1.84735 29.4269 1.83981 28.7874 2.51078L2.01025 28.1432M48.2492 18.4682V4.01857H42.218V12.6884"
+          stroke="currentColor"
+          stroke-width="4.02078"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </span>
+    <span class="home-button__label text-xl font-semibold">Home</span>
+  </NuxtLink>
+</template>
+
+<style scoped>
+.home-button__icon {
+  color: var(--home-button-icon);
+  transition: color 0.4s ease;
+}
+
+.home-button__label {
+  color: var(--home-button-text);
+  transition: color 0.4s ease;
+}
+</style>
