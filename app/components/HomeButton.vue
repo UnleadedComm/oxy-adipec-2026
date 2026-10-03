@@ -18,8 +18,12 @@ const props = withDefaults(defineProps<{
 })
 
 const route = useRoute()
+const { t } = useI18n()
+const localePath = useLocalePath()
+const routeBaseName = useRouteBaseName()
 
-const isHome = computed(() => route.path === '/')
+// 'index' in any locale (/, /ar, ...)
+const isHome = computed(() => routeBaseName(route) === 'index')
 const resolvedTextColor = computed(
   () => props.textColor ?? route.meta.homeTextColor ?? '#fff',
 )
@@ -28,11 +32,11 @@ const resolvedTextColor = computed(
 <template>
   <NuxtLink
     v-if="!isHome"
-    to="/"
-    class="home-button fixed top-22 right-16 z-50 flex items-center gap-3 font-medium"
+    :to="localePath('/')"
+    class="home-button fixed top-22 end-16 z-50 flex items-center gap-3 font-medium"
     :style="{ '--home-button-text': resolvedTextColor, '--home-button-icon': iconColor }"
   >
-    <span class="flex size-18 shrink-0 items-center justify-center rounded-full bg-white">
+    <span class="flex size-18 shrink-0 items-center justify-center rounded-full bg-white shadow-md shadow-black/15">
       <svg
         class="home-button__icon size-10"
         xmlns="http://www.w3.org/2000/svg"
@@ -56,7 +60,7 @@ const resolvedTextColor = computed(
         />
       </svg>
     </span>
-    <span class="home-button__label text-xl font-semibold">Home</span>
+    <span class="home-button__label text-xl font-semibold">{{ t('nav.home') }}</span>
   </NuxtLink>
 </template>
 

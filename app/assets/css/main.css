@@ -37,4 +37,22 @@
   html {
     background-color: var(--color-oxy-blue);
   }
+
+  /* Kiosk-style app: every page fits the viewport, so no scrolling or rubber-banding anywhere. */
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  /*
+   * Spezia has no Arabic glyphs. Until the Arabic brand face is added to fonts.css,
+   * fall back to system Arabic fonts for Arabic pages. Replace the first entry with
+   * the approved Arabic family and keep Spezia for any Latin runs.
+   */
+  :lang(ar) {
+    --font-sans: "Noto Sans Arabic", "Segoe UI", "Geeza Pro", "Spezia", ui-sans-serif, system-ui, sans-serif;
+    --font-wide: "Noto Sans Arabic", "Segoe UI", "Geeza Pro", "Spezia Wide", "Spezia", ui-sans-serif, system-ui, sans-serif;
+  }
 }

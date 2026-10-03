@@ -1,0 +1,42 @@
+{
+  "site": {
+    "title": "Oxy at ADIPEC 2026",
+    "description": "Occidental at ADIPEC 2026, Abu Dhabi."
+  },
+  "nav": {
+    "home": "Home",
+    "homeAriaLabel": "Oxy home",
+    "switchLocale": "العربية"
+  },
+  "home": {
+    "cards": {
+      "operations": {
+        "eyebrow": "Oxy",
+        "title": "Operations",
+        "imageAlt": "Oxy oil and gas operations"
+      },
+      "fastFacts": {
+        "eyebrow": "Oxy",
+        "title": "Fast Facts",
+        "imageAlt": "Oxy Operations Fact Facts"
+      }
+    }
+  },
+  "operations": {
+    "eyebrow": "Oxy",
+    "title": "One System.\nMany Opportunities.",
+    "intro": "Where we operate and what we deliver across our global portfolio."
+  },
+  "ecosystem": {
+    "title": "One System.\nMany Opportunities.",
+    "tabs": {
+      "oilgas": "Oil and Gas",
+      "power": "Power",
+      "water": "Water",
+      "co2": "CO₂"
+    },
+    "hint": "Move your mouse to explore · Click a facility to zoom · Select a pathway above",
+    "backToOverview": "Back to overview",
+    "loading": "Preparing scene…"
+  }
+}
