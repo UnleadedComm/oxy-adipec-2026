@@ -54,5 +54,14 @@
       "carbonEngineering": "Carbon Engineering",
       "directAirCapture": "Direct Air Capture"
     }
+  },
+  "common": {
+    "close": "Close",
+    "openInNewTab": "Open PDF in a new tab",
+    "loading": "Loading…",
+    "pdfError": "This document could not be displayed. Use \"Open PDF in a new tab\" instead.",
+    "previous": "Previous pages",
+    "next": "Next pages",
+    "pageOf": "Page {n} of {total}"
   }
 }

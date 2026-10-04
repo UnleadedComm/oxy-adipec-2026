@@ -7,7 +7,7 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
+    "postinstall": "nuxt prepare && node scripts/copy-pdfjs-assets.mjs",
     "lint": "npm run lint:js && npm run lint:css",
     "lint:js": "eslint .",
     "lint:css": "stylelint \"app/**/*.{css,vue}\"",
@@ -18,6 +18,7 @@
     "@nuxtjs/i18n": "^10.6.0",
     "gsap": "^3.15.0",
     "nuxt": "^4.5.2",
+    "pdfjs-dist": "^6.4.299",
     "three": "^0.170.0",
     "vue": "^3.5.43",
     "vue-router": "^5.3.1"
