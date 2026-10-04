@@ -8,7 +8,7 @@ const hero = useTemplateRef<HTMLElement>('hero')
 // `to` is an unlocalized path; it is run through localePath in the template.
 const cards: { key: string, image: string, to?: string }[] = [
   { key: 'operations', image: '/oxy-operations-bg.webp', to: '/operations' },
-  { key: 'fastFacts', image: '/oxy-fast-facts-bg.webp' },
+  { key: 'fastFacts', image: '/oxy-fast-facts-bg.webp', to: '/fast-facts' },
 ]
 
 onMounted(() => {

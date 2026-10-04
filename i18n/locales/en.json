@@ -38,5 +38,21 @@
     "hint": "Move your mouse to explore · Click a facility to zoom · Select a pathway above",
     "backToOverview": "Back to overview",
     "loading": "Preparing scene…"
+  },
+  "fastFacts": {
+    "eyebrow": "Fast Facts",
+    "cards": {
+      "overview": "Oxy Overview",
+      "texas": "Texas",
+      "newMexico": "New Mexico",
+      "rockies": "Rockies",
+      "usOffshore": "U.S. Offshore",
+      "oman": "Oman",
+      "uae": "United Arab Emirates",
+      "algeria": "Algeria",
+      "lowCarbonVentures": "Low Carbon Ventures",
+      "carbonEngineering": "Carbon Engineering",
+      "directAirCapture": "Direct Air Capture"
+    }
   }
 }
