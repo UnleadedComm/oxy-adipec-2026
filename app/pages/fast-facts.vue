@@ -22,7 +22,7 @@ const PDF_FILES: Record<string, string> = {
   algeria: 'Oxy-Fast-Facts-Algeria-2026',
   lowCarbonVentures: 'Oxy-Fast-Facts-Low-Carbon-Ventures-2026',
   directAirCapture: 'Oxy-Fast-Facts-DAC-2026',
-  // carbonEngineering: no PDF supplied yet — tile stays non-interactive
+  carbonEngineering: 'Oxy-Fast-Facts-Carbon-Engineering-2026',
 }
 
 const pdfUrl = (lang: 'en' | 'ar', base: string) => `/fast-facts/pdf/${lang}/${base}-${lang.toUpperCase()}.pdf`
