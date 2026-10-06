@@ -6,11 +6,13 @@ https://www.oxy.com/siteassets/documents/adipec/2026/en/Oxy-Fast-Facts-Corporate
 https://www.oxy.com/siteassets/documents/adipec/2026/en/Oxy-Fast-Facts-DAC-2026-EN.pdf
 https://www.oxy.com/siteassets/documents/adipec/2026/en/Oxy-Fast-Facts-Low-Carbon-Ventures-2026-EN.pdf
 https://www.oxy.com/siteassets/documents/adipec/2026/en/Oxy-Fast-Facts-New-Mexico-2026-EN.pdf
+
 https://www.oxy.com/siteassets/documents/adipec/2026/en/Oxy-Fast-Facts-Oman-2026-EN.pdf
 https://www.oxy.com/siteassets/documents/adipec/2026/en/Oxy-Fast-Facts-Rockies-2026-EN.pdf
 https://www.oxy.com/siteassets/documents/adipec/2026/en/Oxy-Fast-Facts-Texas-2026-EN.pdf
 https://www.oxy.com/siteassets/documents/adipec/2026/en/Oxy-Fast-Facts-UAE-2026-EN.pdf
 https://www.oxy.com/siteassets/documents/adipec/2026/en/Oxy-Fast-Facts-US-Offshore-2026-EN.pdf
+
 Arabic
 
 
@@ -24,3 +26,16 @@ https://www.oxy.com/siteassets/documents/adipec/2026/ar/Oxy-Fast-Facts-Rockies-2
 https://www.oxy.com/siteassets/documents/adipec/2026/ar/Oxy-Fast-Facts-Texas-2026-AR.pdf
 https://www.oxy.com/siteassets/documents/adipec/2026/ar/Oxy-Fast-Facts-UAE-2026-AR.pdf
 https://www.oxy.com/siteassets/documents/adipec/2026/ar/Oxy-Fast-Facts-US-Offshore-2026-AR.pdf
+
+
+https://www.oxy.com/siteassets/documents/adipec/2026/en/Oxy-Fast-Facts-Algeria-2026-EN.pdf;Fast Facts - EN - Algeria
+https://www.oxy.com/siteassets/documents/adipec/2026/en/Oxy-Fast-Facts-Corporate-2026-EN.pdf;Fast Facts - EN - Corporate
+https://www.oxy.com/siteassets/documents/adipec/2026/en/Oxy-Fast-Facts-DAC-2026-EN.pdf;Fast Facts - EN - DAC
+https://www.oxy.com/siteassets/documents/adipec/2026/en/Oxy-Fast-Facts-Low-Carbon-Ventures-2026-EN.pdf;Fast Facts - EN - Low Carbon Ventures
+https://www.oxy.com/siteassets/documents/adipec/2026/en/Oxy-Fast-Facts-New-Mexico-2026-EN.pdf;Fast Facts - EN - New Mexico
+
+https://www.oxy.com/siteassets/documents/adipec/2026/en/Oxy-Fast-Facts-Oman-2026-EN.pdf;Fast Facts - EN - Oman
+https://www.oxy.com/siteassets/documents/adipec/2026/en/Oxy-Fast-Facts-Rockies-2026-EN.pdf;Fast Facts - EN - Rockies
+https://www.oxy.com/siteassets/documents/adipec/2026/en/Oxy-Fast-Facts-New-Mexico-2026-EN.pdf;Fast Facts - EN - New Mexico
+https://www.oxy.com/siteassets/documents/adipec/2026/en/Oxy-Fast-Facts-Texas-2026-EN.pdf;Fast Facts - EN - Texas
+https://www.oxy.com/siteassets/documents/adipec/2026/en/Oxy-Fast-Facts-US-Offshore-2026-EN.pdf;Fast Facts - EN - US Offshore
