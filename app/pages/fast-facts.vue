@@ -9,23 +9,23 @@ useHead({
 
 // One tile per thumbnail in /public/fast-facts/thumbnails. Titles live under
 // `fastFacts.cards.<key>` in the locale files. PDFs live in
-// /public/fast-facts/pdf/<lang>/ and share filenames across languages; the
-// lightbox offers both versions regardless of the site locale.
+// /public/fast-facts/pdf/<lang>/<base>-<LANG>.pdf; the lightbox offers both
+// languages regardless of the site locale.
 const PDF_FILES: Record<string, string> = {
-  overview: '26-OXY-0239_Oxy_Fast_Facts_2026_CORPORATE r3_WEB.pdf',
-  texas: '26-OXY-0239_Oxy_Fast_Facts_2026_TEXAS r3_WEB.pdf',
-  newMexico: '26-OXY-0239_Oxy_Fast_Facts_2026_NEW MEXICO r3_WEB.pdf',
-  rockies: '26-OXY-0239_Oxy_Fast_Facts_2026_ROCKIES r4_WEB.pdf',
-  usOffshore: '26-OXY-0239_Oxy_Fast_Facts_2026_USOffshore r3_WEB.pdf',
-  oman: '26-OXY-0239_Oxy_Fast_Facts_2026_OMAN r7_WEB.pdf',
-  uae: '26-OXY-0239_Oxy_Fast_Facts_2026_UAE r4_WEB.pdf',
-  algeria: '26-OXY-0239_Oxy_Fast_Facts_2026_ALGERIA r3_WEB.pdf',
-  lowCarbonVentures: '26-OXY-0239_Oxy_Fast_Facts_2026_LowCarbonVentures r4_WEB.pdf',
-  directAirCapture: '26-OXY-0239_Oxy_Fast_Facts_2026_DAC_r3_WEB.pdf',
+  overview: 'Oxy-Fast-Facts-Corporate-2026',
+  texas: 'Oxy-Fast-Facts-Texas-2026',
+  newMexico: 'Oxy-Fast-Facts-New-Mexico-2026',
+  rockies: 'Oxy-Fast-Facts-Rockies-2026',
+  usOffshore: 'Oxy-Fast-Facts-US-Offshore-2026',
+  oman: 'Oxy-Fast-Facts-Oman-2026',
+  uae: 'Oxy-Fast-Facts-UAE-2026',
+  algeria: 'Oxy-Fast-Facts-Algeria-2026',
+  lowCarbonVentures: 'Oxy-Fast-Facts-Low-Carbon-Ventures-2026',
+  directAirCapture: 'Oxy-Fast-Facts-DAC-2026',
   // carbonEngineering: no PDF supplied yet — tile stays non-interactive
 }
 
-const pdfUrl = (lang: 'en' | 'ar', file: string) => `/fast-facts/pdf/${lang}/${encodeURIComponent(file)}`
+const pdfUrl = (lang: 'en' | 'ar', base: string) => `/fast-facts/pdf/${lang}/${base}-${lang.toUpperCase()}.pdf`
 
 const cards = [
   'overview',
