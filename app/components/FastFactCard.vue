@@ -19,12 +19,15 @@ const props = withDefaults(defineProps<{
   title: string
   /** English + Arabic URLs of the PDF to open in a lightbox. */
   pdf?: PdfSources
+  /** English + Arabic QR code images linking to the PDF, shown in the lightbox. */
+  qr?: PdfSources
   /** Optional route; already-localized paths expected (use localePath). */
   to?: string
 }>(), {
   imageAlt: '',
   eyebrow: undefined,
   pdf: undefined,
+  qr: undefined,
   to: undefined,
 })
 
@@ -40,7 +43,7 @@ const interactive = computed(() => Boolean(props.pdf || props.to))
     :to="to"
     :type="pdf ? 'button' : undefined"
     :aria-haspopup="pdf ? 'dialog' : undefined"
-    class="group flex flex-col text-start"
+    class="group flex w-full flex-col text-start"
     :class="interactive && 'cursor-pointer rounded-2xl transition-transform duration-300 hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white'"
     @click="pdf && (lightboxOpen = true)"
   >
@@ -66,6 +69,7 @@ const interactive = computed(() => Boolean(props.pdf || props.to))
     v-if="pdf"
     v-model:open="lightboxOpen"
     :sources="pdf"
+    :qr="qr"
     :title="title"
   />
 </template>
