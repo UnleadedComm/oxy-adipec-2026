@@ -43,7 +43,8 @@ useSeoMeta({
       />
     </NuxtLink>
 
-    <LocaleSwitcher />
+    <!-- Locale switcher temporarily hidden; restore by uncommenting. -->
+    <!-- <LocaleSwitcher /> -->
     <HomeButton />
 
     <NuxtPage />

@@ -7,6 +7,13 @@
  * needed. A QR code to the PDF for the showing language hangs off the right
  * edge of the spread, bottom-aligned with it, in both reading directions; it is
  * absolutely positioned so it never affects the spread's size.
+ *
+ * Open/close motion is CSS driven by `shown`: the dialog rests slightly below
+ * and transparent, fades in and rises on open, and fades out and sinks on
+ * close. Opening shows the modal invisibly first and waits for the viewer's
+ * `ready` (first spread painted) before fading in, capped so a slow document
+ * never leaves the click feeling dead. Closing runs the fade before the native
+ * close, with the viewer kept mounted until then so the spread fades too.
  */
 import { PDF_DOWNLOAD_LABELS, PDF_LANGUAGE_LABELS, type PdfLanguage, type PdfSources } from '~/types/pdf'
 
@@ -23,6 +30,43 @@ const open = defineModel<boolean>('open', { default: false })
 const dialog = useTemplateRef<HTMLDialogElement>('dialog')
 const footer = useTemplateRef<HTMLElement>('footer')
 
+/** Length of the dialog's open/close transition (ms); matches `duration-300`. */
+const TRANSITION_MS = 300
+/** Longest an open waits for the viewer's first paint before fading in anyway. */
+const READY_CAP_MS = 1500
+
+// `viewerMounted` keeps the viewer alive from open until the close transition
+// has played. `shown` drives the CSS transition. `viewerReady` is set by the
+// viewer's first paint and lets a reopen mid-close skip the wait.
+const viewerMounted = ref(false)
+const viewerReady = ref(false)
+const shown = ref(false)
+let closeTimer: ReturnType<typeof setTimeout> | undefined
+let readyResolver: (() => void) | null = null
+let openSeq = 0
+
+function onViewerReady() {
+  viewerReady.value = true
+  readyResolver?.()
+  readyResolver = null
+}
+
+function waitForReady() {
+  if (viewerReady.value) return Promise.resolve()
+  return new Promise<void>((resolve) => {
+    const cap = setTimeout(() => {
+      readyResolver = null
+      resolve()
+    }, READY_CAP_MS)
+    readyResolver = () => {
+      clearTimeout(cap)
+      resolve()
+    }
+  })
+}
+
+const nextFrame = () => new Promise<void>(resolve => requestAnimationFrame(() => resolve()))
+
 // Which language version is showing. Starts from the site locale each time the
 // lightbox opens, but switching here never changes the site locale.
 const { locale, t } = useI18n()
@@ -35,6 +79,8 @@ const languages = Object.keys(PDF_LANGUAGE_LABELS) as PdfLanguage[]
 // The QR code is positioned outside the flow and does not reduce the budget.
 const bounds = ref({ width: 0, height: 0 })
 function measure() {
+  // Only meaningful while the dialog has layout; closed, the footer measures 0.
+  if (!dialog.value?.open) return
   bounds.value = {
     width: Math.floor(Math.min(window.innerWidth * 0.96, 1920)),
     height: Math.floor(Math.min(window.innerHeight * 0.80, 1200) - (footer.value?.offsetHeight ?? 0)),
@@ -44,19 +90,38 @@ function measure() {
 watch(open, async (isOpen) => {
   const el = dialog.value
   if (!el) return
-  if (isOpen && !el.open) {
-    lang.value = locale.value === 'ar' ? 'ar' : 'en'
-    el.showModal()
+  const seq = ++openSeq
+  if (isOpen) {
+    clearTimeout(closeTimer)
+    if (!viewerMounted.value) {
+      viewerReady.value = false
+      viewerMounted.value = true
+      lang.value = locale.value === 'ar' ? 'ar' : 'en'
+    }
+    if (!el.open) el.showModal() // invisible until `shown` flips
     await nextTick()
     measure()
+    await waitForReady()
+    await nextFrame()
+    if (seq !== openSeq) return // closed again while waiting
+    shown.value = true
   }
-  else if (!isOpen && el.open) {
-    el.close()
+  else {
+    shown.value = false
+    closeTimer = setTimeout(() => {
+      el.close()
+      viewerMounted.value = false
+      viewerReady.value = false
+    }, TRANSITION_MS)
   }
 })
 
 onMounted(() => window.addEventListener('resize', measure))
-onBeforeUnmount(() => window.removeEventListener('resize', measure))
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', measure)
+  clearTimeout(closeTimer)
+  readyResolver = null
+})
 
 function onCancel(e: Event) {
   e.preventDefault() // let the state drive close so the transition plays
@@ -72,7 +137,8 @@ function onBackdropClick(e: MouseEvent) {
   <Teleport to="#teleports">
     <dialog
       ref="dialog"
-      class="m-auto size-fit max-h-[94dvh] max-w-[96vw] overflow-visible bg-transparent p-0 opacity-0 transition-[opacity,display,overlay] duration-300 transition-discrete open:opacity-100 open:starting:opacity-0"
+      class="m-auto size-fit max-h-[94dvh] max-w-[96vw] overflow-visible bg-transparent p-0 transition-[opacity,translate] duration-300 ease-out backdrop:bg-black/10 backdrop:transition-opacity backdrop:duration-300"
+      :class="shown ? 'translate-y-0 opacity-100 backdrop:opacity-100' : 'translate-y-8 opacity-0 backdrop:opacity-0'"
       :aria-label="title"
       @cancel="onCancel"
       @click="onBackdropClick"
@@ -113,11 +179,12 @@ function onBackdropClick(e: MouseEvent) {
         <div class="relative">
           <div class="overflow-hidden rounded-2xl">
             <PdfSpreadViewer
-              v-if="open && bounds.width > 0"
+              v-if="viewerMounted && bounds.width > 0"
               :src="src"
               :rtl="lang === 'ar'"
               :max-width="bounds.width"
               :max-height="bounds.height"
+              @ready="onViewerReady"
             />
           </div>
           <!-- Close button straddles the spread's top-right corner (physical right

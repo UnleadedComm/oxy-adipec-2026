@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { PDFDocumentLoadingTask, PDFDocumentProxy, RenderTask } from 'pdfjs-dist'
+import { getPdfData, loadPdfjs } from '~/lib/pdf-cache'
 
 /**
  * Magazine-style PDF viewer: renders two pages side by side as a spread,
@@ -7,6 +8,11 @@ import type { PDFDocumentLoadingTask, PDFDocumentProxy, RenderTask } from 'pdfjs
  * itself to exactly the rendered pages (no surrounding frame). Pages are
  * rendered with pdf.js onto canvases at device pixel ratio and re-fit when the
  * bounds change. With `rtl` the spread reads right-to-left (page 1 on the right).
+ *
+ * Documents come from the in-memory cache in ~/lib/pdf-cache (prefetched by
+ * the Fast Facts page) and share one pdf.js worker. `ready` is emitted once per
+ * `src` when the first spread has painted, or when loading fails, so a host can
+ * hold its reveal until there is something to show.
  */
 const props = withDefaults(defineProps<{
   /** PDF URL, served from /public. */
@@ -23,6 +29,11 @@ const props = withDefaults(defineProps<{
   perSpread: 2,
   rtl: false,
 })
+
+const emit = defineEmits<{
+  /** First spread painted for the current `src`, or loading failed. */
+  ready: []
+}>()
 
 const { t } = useI18n()
 const isRtl = computed(() => props.rtl)
@@ -49,19 +60,31 @@ let pdf: PDFDocumentProxy | null = null
 let renderTasks: RenderTask[] = []
 let frame = 0
 let disposed = false
+// Bumped per load() so a superseded load (src changed mid-flight) bails out.
+let loadSeq = 0
+let readyEmitted = false
+
+function emitReady() {
+  if (readyEmitted || disposed) return
+  readyEmitted = true
+  emit('ready')
+}
 
 const GAP = 0 // px between pages in a spread (0 = bound like a magazine)
 
 async function load() {
+  const seq = ++loadSeq
+  const stale = () => disposed || seq !== loadSeq
   loading.value = true
   error.value = false
+  readyEmitted = false
   try {
-    const pdfjs = await import('pdfjs-dist')
-    const { default: workerSrc } = await import('pdfjs-dist/build/pdf.worker.min.mjs?url')
-    pdfjs.GlobalWorkerOptions.workerSrc = workerSrc
+    const [{ pdfjs, worker }, data] = await Promise.all([loadPdfjs(), getPdfData(props.src)])
+    if (stale()) return
     loadingTask?.destroy()
     loadingTask = pdfjs.getDocument({
-      url: props.src,
+      data,
+      worker,
       // Runtime assets copied to /public/pdfjs by scripts/copy-pdfjs-assets.mjs (postinstall)
       standardFontDataUrl: '/pdfjs/standard_fonts/',
       cMapUrl: '/pdfjs/cmaps/',
@@ -70,9 +93,10 @@ async function load() {
       // Loading API: TrueType subsets otherwise render with broken spacing here.
       disableFontFace: true,
     })
-    const doc = await loadingTask.promise
-    if (disposed) {
-      loadingTask.destroy()
+    const task = loadingTask
+    const doc = await task.promise
+    if (stale()) {
+      task.destroy()
       return
     }
     pdf = doc
@@ -82,11 +106,13 @@ async function load() {
     await render()
   }
   catch (err) {
+    if (stale()) return
     console.error('[pdf] load failed:', err)
     error.value = true
+    emitReady()
   }
   finally {
-    loading.value = false
+    if (!stale()) loading.value = false
   }
 }
 
@@ -129,6 +155,8 @@ async function render() {
     })
   })
   spreadSize.value = { width: totalW, height: totalH }
+  // First complete paint for this document: tell the host it can reveal.
+  Promise.all(renderTasks.map(t => t.promise)).then(emitReady, () => {})
 }
 
 function scheduleRender() {

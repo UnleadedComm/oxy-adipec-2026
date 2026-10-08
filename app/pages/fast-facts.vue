@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const { t } = useI18n()
+import { preloadPdfs } from '~/lib/pdf-cache'
+
+const { t, locale } = useI18n()
 const { $gsap } = useNuxtApp()
 const grid = useTemplateRef<HTMLElement>('grid')
 
@@ -74,6 +76,17 @@ onMounted(() => {
   })
 
   onBeforeUnmount(() => mm.revert())
+
+  // The kiosk serves everything locally, so once the page has settled pull
+  // every document into memory, current language first. The lightbox then
+  // opens from cache and its fade-in reveals painted pages.
+  const langs = locale.value === 'ar' ? (['ar', 'en'] as const) : (['en', 'ar'] as const)
+  const urls = langs.flatMap(l => cards.map(c => c.pdf?.[l]).filter((u): u is string => Boolean(u)))
+  const run = () => {
+    preloadPdfs(urls)
+  }
+  if ('requestIdleCallback' in window) window.requestIdleCallback(run)
+  else setTimeout(run, 1)
 })
 
 // Leaving: the reveal in reverse — tiles sink and fade, last tile first — and
