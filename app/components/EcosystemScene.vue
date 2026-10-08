@@ -73,15 +73,23 @@ onBeforeUnmount(() => {
         id="tabs"
         class="tabs"
       >
-        <button
-          v-for="tab in tabs"
+        <template
+          v-for="(tab, i) in tabs"
           :key="tab"
-          class="tab-btn"
-          type="button"
-          :data-tab="tab"
         >
-          {{ t(`ecosystem.tabs.${tab}`) }}
-        </button>
+          <span
+            v-if="i > 0"
+            class="tab-divider"
+            aria-hidden="true"
+          />
+          <button
+            class="tab-btn"
+            type="button"
+            :data-tab="tab"
+          >
+            {{ t(`ecosystem.tabs.${tab}`) }}
+          </button>
+        </template>
       </div>
 
       <div

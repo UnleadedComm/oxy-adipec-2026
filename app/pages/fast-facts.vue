@@ -53,6 +53,8 @@ const cards = [
   }
 })
 
+const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
 onMounted(() => {
   if (!grid.value) return
 
@@ -73,12 +75,29 @@ onMounted(() => {
 
   onBeforeUnmount(() => mm.revert())
 })
+
+// Leaving: the reveal in reverse — tiles sink and fade, last tile first — and
+// navigation waits for it. Done as a route guard rather than a page transition
+// because Vue resolves leave hooks from the destination page's transition
+// config, and the other pages define none.
+onBeforeRouteLeave(async () => {
+  if (!grid.value || reduceMotion()) return
+  await $gsap.to(grid.value.children, {
+    y: 32,
+    opacity: 0,
+    duration: 0.45,
+    stagger: { each: 0.04, from: 'end' },
+    ease: 'power3.in',
+    overwrite: true,
+  })
+})
 </script>
 
 <template>
   <main class="relative flex min-h-dvh w-full items-center justify-center">
     <div
       ref="grid"
+      data-reveal
       class="grid w-7/12 grid-cols-4 gap-6"
     >
       <div

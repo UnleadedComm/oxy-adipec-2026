@@ -15,16 +15,31 @@ const cards: { key: string, image: string, to?: string }[] = [
   { key: 'fastFacts', image: '/oxy-fast-facts-bg.webp', to: '/fast-facts' },
 ]
 
-onMounted(() => {
-  if (!hero.value) return
+const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-  $gsap.from(hero.value.querySelectorAll('[data-animate]'), {
-    y: 24,
-    opacity: 0,
-    duration: 0.8,
-    stagger: 0.12,
-    ease: 'power3.out',
-  })
+// Reveal: the inverse of playLeave below. The heading's words rise into view
+// from behind per-word masks while the cards lift and fade in. The split is
+// reverted once the words land so the heading is plain markup again.
+function playReveal() {
+  const tl = $gsap.timeline({ defaults: { ease: 'power2.out' } })
+
+  if (heading.value) {
+    const split = SplitText.create(heading.value, { type: 'words', mask: 'words' })
+    tl.from(split.words, { yPercent: 110, duration: 0.6, stagger: 0.05, onComplete: () => split.revert() }, 0)
+  }
+
+  const tiles = cardGrid.value ? Array.from(cardGrid.value.children) : []
+  if (tiles.length) {
+    tl.from(tiles, { y: 48, opacity: 0, duration: 0.6, stagger: 0.1 }, 0.15)
+  }
+
+  return tl
+}
+
+onMounted(() => {
+  $gsap.registerPlugin(SplitText)
+  if (reduceMotion()) return
+  playReveal()
 })
 
 // Leave transition: the heading's words slide down behind per-word masks while
@@ -47,7 +62,7 @@ function playLeave() {
 }
 
 onBeforeRouteLeave(async () => {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  if (reduceMotion()) return
   await playLeave()
 })
 </script>

@@ -87,6 +87,13 @@
     transition: background 0.25s, color 0.25s;
   }
 
+  & .tab-divider {
+    align-self: center;
+    width: 1px;
+    height: 18px;
+    background: var(--color-navy);
+  }
+
   & .tab-btn.active {
     color: #fff;
     background: #215296;

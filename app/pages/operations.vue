@@ -16,6 +16,9 @@ useHead({
 })
 
 const backdrop = useTemplateRef<HTMLElement>('backdrop')
+const scene = useTemplateRef<HTMLElement>('scene')
+
+const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 onMounted(() => {
   if (!backdrop.value) return
@@ -30,6 +33,22 @@ onMounted(() => {
 
   onBeforeUnmount(() => mm.revert())
 })
+
+// Leave: the explorer's header bar goes first, then its title, tab bar and
+// viewer fade out one after another (opacity only, mirroring the explorer's own
+// fade-up on boot), then the light backdrop fades so the video shows through.
+// The route guard waits for the timeline, so the page stays mounted until it
+// finishes.
+onBeforeRouteLeave(async () => {
+  if (reduceMotion()) return
+  const tl = $gsap.timeline({ defaults: { ease: 'power2.in' } })
+  const headerBar = scene.value?.querySelector('#headerBar')
+  const parts = scene.value?.querySelectorAll('.explore-title, .tabs, .viewer-wrap') ?? []
+  if (headerBar) tl.to(headerBar, { opacity: 0, duration: 0.3 }, 0)
+  if (parts.length) tl.to(parts, { opacity: 0, duration: 0.4, stagger: 0.1 }, headerBar ? 0.15 : 0)
+  if (backdrop.value) tl.to(backdrop.value, { opacity: 0, duration: 0.5, overwrite: true }, '-=0.2') // wins over a still-running entrance fade
+  await tl
+})
 </script>
 
 <template>
@@ -39,7 +58,10 @@ onMounted(() => {
       class="pointer-events-none fixed inset-0 -z-10 bg-[#f2f3f5]"
       aria-hidden="true"
     />
-    <div class="w-full">
+    <div
+      ref="scene"
+      class="w-full"
+    >
       <EcosystemScene />
     </div>
   </main>
