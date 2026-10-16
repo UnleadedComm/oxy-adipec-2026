@@ -35,6 +35,10 @@ import { BokehPass } from 'three/addons/postprocessing/BokehPass.js'
  * @property {string} [modelUrl]   GLB URL (default: /ecosystem/ecosystem.glb)
  * @property {string} [dracoPath]  Directory holding the Draco decoder files
  * @property {string} [fontFamily] CSS font stack for the 3D nameplates
+ * @property {(key: string, params?: Record<string, unknown>) => string} [t]
+ *   Translator for all user-facing copy (the component passes vue-i18n's `t`).
+ *   Keys live under `ecosystem.*` in i18n/locales/*.json.
+ * @property {'ltr' | 'rtl'} [dir] Reading direction of the active locale
  * @property {Record<string, unknown>} [config] Overrides merged over BAKED_LOOK
  */
 
@@ -48,9 +52,16 @@ export function createEcosystemScene(root, options = {}) {
     modelUrl: '/ecosystem/ecosystem.glb',
     dracoPath: '/ecosystem/draco/',
     fontFamily: 'Spezia, ui-sans-serif, system-ui, sans-serif',
+    t: null,
+    dir: 'ltr',
     config: null,
     ...options,
   }
+  // All copy goes through here. Without a translator the raw key is shown, which
+  // makes a missing wiring obvious instead of silently falling back to English.
+  const tr = (key, params) => (typeof opts.t === 'function' ? opts.t(key, params) : key)
+  // Horizontal multiplier for directional motion: +1 LTR, -1 RTL (see useDirection).
+  const dirX = opts.dir === 'rtl' ? -1 : 1
   const hostEl = root // `root` is shadowed inside setupModel/registerFlag by the GLTF root
   const $id = id => hostEl.querySelector('#' + id)
   const BUILD_TAG = '2026-09-20 v18-layout (nuxt port)'
@@ -63,7 +74,7 @@ export function createEcosystemScene(root, options = {}) {
 
   // BAKED LOOK — Cody's approved Lock Look (Jul 2026), shipped as the built-in
   // default. Merged over CONFIG below, before anything reads it.
-  const BAKED_LOOK = { exposure: 1, toneMap: 5, pixelRatio: 2, envInt: 0.35, ambient: 0.13, hemi: 0.37, fill: 0.28, matEnv: 0.5, sunInt: 2.7, sunColor: '#ffffff', sunAzimuth: 60, sunElevation: 54, spinSun: false, spinSunSpeed: 20, shadowOn: true, shadowDark: 0.66, shadowRadius: 8.3, shadowBias: -0.0004, shadowMap: 2048, shadowTint: '#7f8896', bg: '#f2f3f5', flagSpeed: 3, flagAmp: 0.135, flagFlip: true, hbHeight: 258, hbColor: '#ffffff', hbAlpha: 1, hbGrad: true, hbColor2: '#f2f3f5', hbAlpha2: 0, baseAz: 150, baseEl: 30, zoom: 1.16, targetY: -0.03, frameX: -45, frameY: 15, frameXTab: 76, frameYTab: -8, frameXFocus: 71, frameYFocus: 0, swayX: 13, swayY: 4.5, damping: 3.2, invertX: false, invertY: true, dragOn: false, wheelZoom: false, hoverLift: 0.95, dimOpacity: 0.18, dimDesat: 1, activeLift: 0, hlSpeed: 3.5, focusCam: true, panelX: 58, panelY: 104, panelW: 358, glassBlur: 20, glassAlpha: 0.79, glassSat: 1.05, pshX: 0, pshY: 12, pshBlur: 44, pshOpacity: 0.16, pshColor: '#16223a', ppEnabled: true, smaaOn: true, aoOn: true, aoBlend: 0.85, aoRadius: 0.53, aoScale: 1.95, aoThickness: 1.15, aoDistExp: 1, bloomOn: false, bloomStrength: 0.21, bloomRadius: 0.28, bloomThreshold: 0.96, dofOn: false, dofFocus: 95, dofAperture: 1, dofMaxblur: 0.008, sharpenOn: false, sharpenAmount: 0.4, chromaticOn: false, chromaticAmount: 0.003, vignetteOn: false, vignetteAmount: 0.5, focusPad: 1.07, focusHeight: 0.33, hsColor: '#2e8ef7', hsSize: 21, hsSpeed: 2.4, hsOpacity: 1, hsOffX: 0.1, hsOffY: 1.2, hsOffZ: 0, hsAz: 234, hsEl: 33, hsZoom: 0.54, dacHovColor: '#005fb8', dacHovStrength: 0.9, dacHovFade: 3.5, eorHovColor: '#0084ff', eorHovStrength: 1.25, hsEorOffX: 0, hsEorOffY: 1.2, hsEorOffZ: 0, hsEorAz: 225, hsEorEl: 28, hsEorZoom: 0.75, hsSeqOffX: 2.4, hsSeqOffY: -2.3, hsSeqOffZ: -2.5, hsSeqAz: 225, hsSeqEl: 28, hsSeqZoom: 0.75, hsMidOffX: 0, hsMidOffY: 1.2, hsMidOffZ: 0, hsMidAz: 225, hsMidEl: 28, hsMidZoom: 0.75, hsWatOffX: 0, hsWatOffY: 1.2, hsWatOffZ: 0, hsWatAz: 225, hsWatEl: 28, hsWatZoom: 0.75, tourDwell: 9, calloutSecs: 4, lblOn: true, lblHoverOnly: true, lblSize: 2.95, lblFont: 72, lblWeight: 700, lblItalic: false, lblTextColor: '#1c2430', lblPillColor: '#ffffff', lblPillOp: 0.95, lblRadius: 200, lblPadX: 62, lblPadY: 48, lblDotOn: true, lblDotColor: '#e0342e', lblDotSize: 18, lblShBlur: 24, lblShOp: 0.35, lblShOffY: 10, lblAlong: 4.8, lblAway: 2.3, lblHeight: 2.4, lblYaw: 180, lblTilt: 90, lblGhost: 0.28, lblFocusScale: 0.55, waterSpeed: 2.31, waterAmp: 0.69, waterScale: 8, waterWarp: 0.8, waterSwell: 0.028, waterRough: 0, waterGloss: 0.525, waterReflect: 3, waterTint: '#274853', waterSkyColor: '#6eaecf', dmExp: 0.25, dmBright: 1.24, dmGamma: 1, dmMetal: -0.51, dmRough: 0, fanRpm: 25, airOn: true, airColor: '#7fd4ff', airPerFan: 1, airReach: 3.8, airHeight: 1.9, airSide: 1.3, airDrop: 0.9, airFlow: 1.37, airDash: 6, airOpacity: 0.66, airThick: 0.03, airFocusOnly: true, flowOn: true, flowSpeed: 1.39, flowDash: 1.1, flowGap: 0.1, flowThick: 0.09, flowOpacity: 1, flowGhost: 0, flowHeight: 0.15, flowRadius: 1.5, flowHoverMul: 5, flowColOil: '#2fa84f', flowColPower: '#e0342e', flowColWater: '#d9a516', flowColCo2: '#1e6fd9', ringsOn: true, ringColor: '#75d1ff', ringScale: 2, ringPeriod: 4.5, ringOpacity: 0.51, ringTube: 0.06, ringCount: 4, ringTilt: 0, ringOffX: -0.35, ringOffY: -0.15, ringOffZ: 0.3, ringMaskTop: 0.7, ringMaskSoft: 0.8, seqOffX: 0, seqOffY: 0, seqOffZ: 0, seqMaskTop: 1.2, seqTilt: 0, pipeOn: true, pipeColor: '#e6e6e6', pipeMetal: 0.59, pipeRough: 0.34, earthOn: true, earthBright: 1, earthEmissive: 0, earthRough: 0.72, earthMetal: 0, wellheadOn: false, wellheadColor: '#c0261f', wellheadMetal: 0.24, wellheadRough: 0.2, showFps: false }
+  const BAKED_LOOK = { exposure: 1, toneMap: 5, pixelRatio: 2, envInt: 0.35, ambient: 0.13, hemi: 0.37, fill: 0.28, matEnv: 0.5, sunInt: 2.7, sunColor: '#ffffff', sunAzimuth: 60, sunElevation: 54, spinSun: false, spinSunSpeed: 20, shadowOn: true, shadowDark: 0.66, shadowRadius: 8.3, shadowBias: -0.0004, shadowMap: 2048, shadowTint: '#7f8896', bg: '#f2f3f5', flagSpeed: 3, flagAmp: 0.135, flagFlip: true, hbHeight: 258, hbColor: '#ffffff', hbAlpha: 1, hbGrad: true, hbColor2: '#f2f3f5', hbAlpha2: 0, baseAz: 150, baseEl: 30, zoom: 1.16, targetY: -0.03, frameX: -45, frameY: 15, frameXTab: 76, frameYTab: -8, frameXFocus: 71, frameYFocus: 0, swayX: 13, swayY: 4.5, damping: 3.2, invertX: false, invertY: true, dragOn: false, wheelZoom: false, hoverLift: 0.95, dimOpacity: 0.18, dimDesat: 1, activeLift: 0, hlSpeed: 3.5, focusCam: true, panelX: 58, panelY: 174, panelW: 358, glassBlur: 20, glassAlpha: 0.79, glassSat: 1.05, pshX: 0, pshY: 12, pshBlur: 44, pshOpacity: 0.16, pshColor: '#16223a', ppEnabled: true, smaaOn: true, aoOn: true, aoBlend: 0.85, aoRadius: 0.53, aoScale: 1.95, aoThickness: 1.15, aoDistExp: 1, bloomOn: false, bloomStrength: 0.21, bloomRadius: 0.28, bloomThreshold: 0.96, dofOn: false, dofFocus: 95, dofAperture: 1, dofMaxblur: 0.008, sharpenOn: false, sharpenAmount: 0.4, chromaticOn: false, chromaticAmount: 0.003, vignetteOn: false, vignetteAmount: 0.5, focusPad: 1.07, focusHeight: 0.33, hsColor: '#2e8ef7', hsSize: 21, hsSpeed: 2.4, hsOpacity: 1, hsOffX: 0.1, hsOffY: 1.2, hsOffZ: 0, hsAz: 234, hsEl: 33, hsZoom: 0.54, dacHovColor: '#005fb8', dacHovStrength: 0.9, dacHovFade: 3.5, eorHovColor: '#0084ff', eorHovStrength: 1.25, hsEorOffX: 0, hsEorOffY: 1.2, hsEorOffZ: 0, hsEorAz: 225, hsEorEl: 28, hsEorZoom: 0.75, hsSeqOffX: 2.4, hsSeqOffY: -2.3, hsSeqOffZ: -2.5, hsSeqAz: 225, hsSeqEl: 28, hsSeqZoom: 0.75, hsMidOffX: 0, hsMidOffY: 1.2, hsMidOffZ: 0, hsMidAz: 225, hsMidEl: 28, hsMidZoom: 0.75, hsWatOffX: 0, hsWatOffY: 1.2, hsWatOffZ: 0, hsWatAz: 225, hsWatEl: 28, hsWatZoom: 0.75, tourDwell: 9, calloutSecs: 4, lblOn: true, lblHoverOnly: true, lblSize: 2.95, lblFont: 72, lblWeight: 700, lblItalic: false, lblTextColor: '#1c2430', lblPillColor: '#ffffff', lblPillOp: 0.95, lblRadius: 200, lblPadX: 62, lblPadY: 48, lblDotOn: true, lblDotColor: '#e0342e', lblDotSize: 18, lblShBlur: 24, lblShOp: 0.35, lblShOffY: 10, lblAlong: 4.8, lblAway: 2.3, lblHeight: 2.4, lblYaw: 180, lblTilt: 90, lblGhost: 0.28, lblFocusScale: 0.55, waterSpeed: 2.31, waterAmp: 0.69, waterScale: 8, waterWarp: 0.8, waterSwell: 0.028, waterRough: 0, waterGloss: 0.525, waterReflect: 3, waterTint: '#274853', waterSkyColor: '#6eaecf', dmExp: 0.25, dmBright: 1.24, dmGamma: 1, dmMetal: -0.51, dmRough: 0, fanRpm: 25, airOn: true, airColor: '#7fd4ff', airPerFan: 1, airReach: 3.8, airHeight: 1.9, airSide: 1.3, airDrop: 0.9, airFlow: 1.37, airDash: 6, airOpacity: 0.66, airThick: 0.03, airFocusOnly: true, flowOn: true, flowSpeed: 1.39, flowDash: 1.1, flowGap: 0.1, flowThick: 0.09, flowOpacity: 1, flowGhost: 0, flowHeight: 0.15, flowRadius: 1.5, flowHoverMul: 5, flowColOil: '#2fa84f', flowColPower: '#e0342e', flowColWater: '#d9a516', flowColCo2: '#1e6fd9', ringsOn: true, ringColor: '#75d1ff', ringScale: 2, ringPeriod: 4.5, ringOpacity: 0.51, ringTube: 0.06, ringCount: 4, ringTilt: 0, ringOffX: -0.35, ringOffY: -0.15, ringOffZ: 0.3, ringMaskTop: 0.7, ringMaskSoft: 0.8, seqOffX: 0, seqOffY: 0, seqOffZ: 0, seqMaskTop: 1.2, seqTilt: 0, pipeOn: true, pipeColor: '#e6e6e6', pipeMetal: 0.59, pipeRough: 0.34, earthOn: true, earthBright: 1, earthEmissive: 0, earthRough: 0.72, earthMetal: 0, wellheadOn: false, wellheadColor: '#c0261f', wellheadMetal: 0.24, wellheadRough: 0.2, showFps: false }
 
   /* ----------------------------------------------------------------------------
    CONFIG — defaults ported from the Omma build (lighting kept 1:1)
@@ -197,15 +208,20 @@ export function createEcosystemScene(root, options = {}) {
 ---------------------------------------------------------------------------- */
   // Per-facility focus overrides: focusPadMul multiplies the global Focus Zoom
   // (smaller = closer), focusHeight overrides the global look-at height.
+  // Copy (label/desc) comes from i18n: ecosystem.facilities.<key>; `cat` from
+  // ecosystem.categories.
+  const CAT_CORE = tr('ecosystem.categories.coreBusiness')
+  const CAT_LCV = tr('ecosystem.categories.lowCarbonVentures')
+  const facilityCopy = key => ({ label: tr(`ecosystem.facilities.${key}.label`), desc: tr(`ecosystem.facilities.${key}.desc`) })
   const FACILITY_DEFS = {
-    rig: { match: /rig/i, label: 'Oil and Gas', cat: 'Core Business', desc: 'We operate a balanced portfolio of conventional and unconventional resources across the United States, the Middle East and North Africa. Combined with advanced recovery expertise and targeted exploration, these assets provide more than 30 years of development opportunity.', focusPadMul: 0.8, focusHeight: 0.26 },
-    midstream: { match: /midstream/i, label: 'Midstream and Marketing', cat: 'Core Business', desc: 'Our midstream and marketing business connects production to market through a network of gathering, processing, transportation and storage assets. These capabilities help move resources efficiently across our operations.' },
-    eor: { match: /eor/i, label: 'Enhanced Oil Recovery', cat: 'Core Business', desc: 'Enhanced oil recovery is a core competitive advantage that combines CO₂ management, infrastructure and technical expertise to expand resource potential across our portfolio.', focusPadMul: 0.8 },
-    power: { match: /power/i, label: 'Lower Carbon Power', cat: 'Core Business', desc: 'Lower-carbon power and electrification is an important part of our integrated system, helping meet operational energy needs and creating opportunities to support growing demand from data centers and other power-intensive industries.', focusPadMul: 1.12 }, // flat tile fits tight — back the close-up out
-    water: { match: /water/i, label: 'Water Management', cat: 'Core Business', desc: 'Water management supports production and advanced recovery across our integrated system. Through water treatment and recycling, we help maximize the use of existing resources while minimizing freshwater demand.', focusPadMul: 1.12 }, // flat tile fits tight — back the close-up out
-    dac: { match: /dac/i, label: 'Direct Air Capture', cat: 'Low Carbon Ventures', desc: 'As part of our integrated system, Direct Air Capture can support EOR or geologic sequestration, creating opportunities for lower-carbon products, fuels and carbon dioxide removal credits.', focusPadMul: 0.9 },
-    sequestration: { match: /sequestration/i, label: 'CO₂ Sequestration', cat: 'Low Carbon Ventures', desc: 'Dedicated sequestration creates opportunities to store CO₂ from industrial sources and enable lower-carbon products. Leveraging our subsurface and CO₂ expertise, we help customers manage emissions through geologic storage.' },
-    lithium: { match: /lithium/i, label: 'Lithium Production', cat: 'Low Carbon Ventures', desc: 'We’re advancing direct lithium extraction technologies designed to produce high-purity lithium compounds from brines while supporting a more secure and reliable domestic supply of critical minerals.', focusPadMul: 0.9 },
+    rig: { match: /rig/i, ...facilityCopy('rig'), cat: CAT_CORE, focusPadMul: 0.8, focusHeight: 0.26 },
+    midstream: { match: /midstream/i, ...facilityCopy('midstream'), cat: CAT_CORE },
+    eor: { match: /eor/i, ...facilityCopy('eor'), cat: CAT_CORE, focusPadMul: 0.8 },
+    power: { match: /power/i, ...facilityCopy('power'), cat: CAT_CORE, focusPadMul: 1.12 }, // flat tile fits tight — back the close-up out
+    water: { match: /water/i, ...facilityCopy('water'), cat: CAT_CORE, focusPadMul: 1.12 }, // flat tile fits tight — back the close-up out
+    dac: { match: /dac/i, ...facilityCopy('dac'), cat: CAT_LCV, focusPadMul: 0.9 },
+    sequestration: { match: /sequestration/i, ...facilityCopy('sequestration'), cat: CAT_LCV },
+    lithium: { match: /lithium/i, ...facilityCopy('lithium'), cat: CAT_LCV, focusPadMul: 0.9 },
   }
 
   // Tab definitions — active tiles per Oxy_Website_Diagram_V4.pdf.
@@ -214,38 +230,38 @@ export function createEcosystemScene(root, options = {}) {
   // Panel content per tab: integration copy, facility chips (key, label, dot
   // color), and the Explore link. Point `href` at the deep-dive pages when they
   // exist; '#' renders the link but goes nowhere.
+  // Copy comes from i18n: ecosystem.pathways.<tab> (title/desc/link) and
+  // ecosystem.chips.<facility> (short chip labels).
+  const pathwayCopy = tab => ({ title: tr(`ecosystem.pathways.${tab}.title`), desc: tr(`ecosystem.pathways.${tab}.desc`) })
+  const chip = (key, color) => [key, tr(`ecosystem.chips.${key}`), color]
   const PATHWAYS = {
     oilgas: {
-      title: 'Oil and Gas', tag: 'Core Business',
-      desc: 'Oil and gas production is the core of our business. From primary production and enhanced oil recovery to midstream and marketing, water management, lower-carbon power and Direct Air Capture, our capabilities are connected through a system designed to get more from every asset.',
+      ...pathwayCopy('oilgas'), tag: CAT_CORE,
       facilities: ['rig', 'midstream', 'power', 'eor', 'water', 'dac'],
       connections: [],
-      chips: [['rig', 'Oil and Gas', '#2fa84f'], ['midstream', 'Midstream', '#2fa84f'], ['eor', 'EOR', '#2fa84f'], ['power', 'Power', '#2fa84f'], ['water', 'Water', '#2fa84f'], ['dac', 'DAC', '#2fa84f']],
-      link: { label: 'Explore Oil and Gas', href: '#' },
+      chips: [chip('rig', '#2fa84f'), chip('midstream', '#2fa84f'), chip('eor', '#2fa84f'), chip('power', '#2fa84f'), chip('water', '#2fa84f'), chip('dac', '#2fa84f')],
+      link: { label: tr('ecosystem.pathways.oilgas.link'), href: '#' },
     },
     power: {
-      title: 'Power', tag: 'Core Business',
-      desc: 'Reliable power is essential to our operations. Managing power as part of an integrated system helps support oil and gas production, enhanced oil recovery and Direct Air Capture while improving energy efficiency.',
+      ...pathwayCopy('power'), tag: CAT_CORE,
       facilities: ['rig', 'power', 'eor', 'dac', 'lithium'],
       connections: [],
-      chips: [['power', 'Power', '#e0342e'], ['rig', 'Oil and Gas', '#e0342e'], ['eor', 'EOR', '#e0342e'], ['dac', 'DAC', '#e0342e'], ['lithium', 'Lithium', '#e0342e']],
-      link: { label: 'Explore Power', href: '#' },
+      chips: [chip('power', '#e0342e'), chip('rig', '#e0342e'), chip('eor', '#e0342e'), chip('dac', '#e0342e'), chip('lithium', '#e0342e')],
+      link: { label: tr('ecosystem.pathways.power.link'), href: '#' },
     },
     water: {
-      title: 'Water', tag: 'Core Business',
-      desc: 'Water management is an important aspect of producing oil and gas. Moving, treating and reusing water is a critical part of supporting safe, reliable and efficient operations across our business.',
+      ...pathwayCopy('water'), tag: CAT_CORE,
       facilities: ['rig', 'eor', 'water'],
       connections: [],
-      chips: [['water', 'Water', '#d9a516'], ['rig', 'Oil and Gas', '#d9a516'], ['eor', 'EOR', '#d9a516']],
-      link: { label: 'Explore Water Management', href: '#' },
+      chips: [chip('water', '#d9a516'), chip('rig', '#d9a516'), chip('eor', '#d9a516')],
+      link: { label: tr('ecosystem.pathways.water.link'), href: '#' },
     },
     co2: {
-      title: 'CO₂', tag: 'Low Carbon Ventures',
-      desc: 'Oxy has a unique capability in managing, processing, transporting and storing CO₂. We leverage that expertise to support advanced recovery and to progress integrated technologies that expand opportunities across our business.',
+      ...pathwayCopy('co2'), tag: CAT_LCV,
       facilities: ['power', 'eor', 'dac', 'sequestration'],
       connections: [],
-      chips: [['dac', 'DAC', '#1e6fd9'], ['eor', 'EOR', '#1e6fd9'], ['sequestration', 'Sequestration', '#1e6fd9'], ['power', 'Power', '#1e6fd9']],
-      link: { label: 'Explore CO₂ and DAC', href: '#' },
+      chips: [chip('dac', '#1e6fd9'), chip('eor', '#1e6fd9'), chip('sequestration', '#1e6fd9'), chip('power', '#1e6fd9')],
+      link: { label: tr('ecosystem.pathways.co2.link'), href: '#' },
     },
   }
 
@@ -290,7 +306,7 @@ export function createEcosystemScene(root, options = {}) {
   const loaderText = $id('loaderText')
   const loaderPct = $id('loaderPct')
   const loaderBar = $id('loaderBar')
-  const LOADER_LINES = ['Surveying the site…', 'Raising the derrick…', 'Spinning up the DAC fans…', 'Filling the clarifiers…', 'Pressurizing pipelines…', 'Charging flow lines…', 'Warming the calciner…', 'Final checks…']
+  const LOADER_LINES = ['survey', 'derrick', 'fans', 'clarifiers', 'pipelines', 'flowLines', 'calciner', 'finalChecks'].map(k => tr(`ecosystem.loader.lines.${k}`))
   function setLoaderProgress(frac, label) {
     const f = Math.min(Math.max(frac, 0), 1)
     if (loaderPct) loaderPct.textContent = Math.round(f * 100) + '%'
@@ -339,7 +355,7 @@ export function createEcosystemScene(root, options = {}) {
   }
   const fpsMeter = $id('fpsMeter')
 
-  loaderText.textContent = 'Starting engine…'
+  loaderText.textContent = tr('ecosystem.loader.startingEngine')
   console.log('[explorer] boot — three r' + THREE.REVISION)
 
   /* ----------------------------------------------------------------------------
@@ -746,7 +762,7 @@ export function createEcosystemScene(root, options = {}) {
     (err) => {
       if (disposed) return
       console.error('Model load failed:', err)
-      loaderText.textContent = 'Could not load the ecosystem model — see console.'
+      loaderText.textContent = tr('ecosystem.loader.error')
     },
   )
 
@@ -1196,7 +1212,7 @@ export function createEcosystemScene(root, options = {}) {
    INFO PANEL — one panel, two modes: pathway (tab) and facility (click-focus)
 ---------------------------------------------------------------------------- */
   function panelShowPathway(pw) {
-    infoTag.textContent = pw.tag || 'Integration' // per-tab category (see PATHWAYS)
+    infoTag.textContent = pw.tag || tr('ecosystem.panel.integration') // per-tab category (see PATHWAYS)
     infoTitle.textContent = pw.title
     infoDesc.textContent = pw.desc
     infoChips.innerHTML = '';
@@ -1212,7 +1228,7 @@ export function createEcosystemScene(root, options = {}) {
       infoChips.appendChild(chip)
     })
     infoLink.setAttribute('href', (pw.link && pw.link.href) || '#')
-    infoLinkText.textContent = (pw.link && pw.link.label) || 'Explore'
+    infoLinkText.textContent = (pw.link && pw.link.label) || tr('ecosystem.panel.explore')
     infoPanel.classList.remove('recede')
     cardShow(infoPanel)
   }
@@ -1223,7 +1239,7 @@ export function createEcosystemScene(root, options = {}) {
   function panelShowFacility(key) {
     const def = FACILITY_DEFS[key]
     if (!def) return
-    infoTag.textContent = def.cat || 'Integration' // Core Business / Low Carbon Ventures
+    infoTag.textContent = def.cat || tr('ecosystem.panel.integration') // Core Business / Low Carbon Ventures
     infoPanel.classList.add('focused') // Level 3: reveals the explore button above the crumbs
     const fill = () => {
       facTitle.textContent = def.label
@@ -1236,15 +1252,16 @@ export function createEcosystemScene(root, options = {}) {
     if (infoPanel.style.display !== 'block' || infoPanel.classList.contains('hide')) cardShow(infoPanel)
     const visible = facilityPanel.style.display === 'block' && !facilityPanel.classList.contains('hide')
     if (visible && facTitle.textContent !== def.label) {
-    // tile-to-tile hop: out to the left, swap, in from the right (~100px)
+    // tile-to-tile hop: out toward the start edge, swap, in from the end edge
+    // (~100px); mirrored in RTL via dirX
       clearTimeout(facilityPanel._hopT)
       facilityPanel.style.transition = 'opacity .2s ease, transform .2s ease'
       facilityPanel.style.opacity = '0'
-      facilityPanel.style.transform = 'translateX(-70px)'
+      facilityPanel.style.transform = 'translateX(' + (-70 * dirX) + 'px)'
       facilityPanel._hopT = setTimeout(() => {
         fill()
         facilityPanel.style.transition = 'none'
-        facilityPanel.style.transform = 'translateX(100px)'
+        facilityPanel.style.transform = 'translateX(' + (100 * dirX) + 'px)'
         requestAnimationFrame(() => requestAnimationFrame(() => {
           facilityPanel.style.transition = 'opacity .32s ease, transform .32s cubic-bezier(0.22, 0.9, 0.35, 1)'
           facilityPanel.style.opacity = '1'
@@ -1289,12 +1306,12 @@ export function createEcosystemScene(root, options = {}) {
       const d = document.createElement('div')
       d.className = 'hotspot'
       d.style.display = 'none'
-      d.title = 'Take a closer look'
+      d.title = tr('ecosystem.hotspot.closerLook')
       d.innerHTML = '<span class="hs-ring"></span><span class="hs-ring hs-ring2"></span><span class="hs-core"></span>'
       dacHotspot.parentElement.appendChild(d)
       h.el = d
     }
-    if (h.key === 'sequestration') h.el.title = 'What happens down here?'
+    if (h.key === 'sequestration') h.el.title = tr('ecosystem.hotspot.underground')
     h.el.addEventListener('click', (e) => {
       e.stopPropagation()
       if (h.key === 'sequestration') {
@@ -2185,25 +2202,15 @@ export function createEcosystemScene(root, options = {}) {
   const flowPickMeshes = []
   let hoveredFlow = null
   let activeFlow = null
-  const FLOW_FAMILY_LABEL = { oil: 'Crude & gas', power: 'Low-carbon power', water: 'Produced water', co2: 'Captured CO₂' }
-  const FLOW_COPY = {
-    G1: { title: 'Oil and Gas to Midstream', body: 'Our oil and gas production flows through our midstream and marketing business for gathering and transport to market.' },
-    G2: { title: 'EOR Barrels to Midstream', body: 'Oil recovered with CO₂ moves through the same midstream network.' },
-    R1: { title: 'Powering Our Operations', body: 'We manage power to our oil and gas operations. Natural gas can also be used to support power generation and lower-carbon power when paired with carbon capture.' },
-    R2: { title: 'Powering EOR', body: 'Lower-carbon power helps support enhanced oil recovery operations, including through our Goldsmith Solar facility, which powers the Goldsmith EOR field in West Texas.' },
-    R3: { title: 'Powering Direct Air Capture', body: 'Power for DAC will come from new renewable or low-emission sources, helping meet energy needs without reducing existing renewable power available on the grid.' },
-    Y1: { title: 'Produced Water Management', body: 'Through treatment and recycling, we maximize use of produced water, helping reduce freshwater demand while supporting production and advanced recovery.' },
-    Y2: { title: 'Recycled Water to EOR', body: 'Treated water heads back to the recovery field — closing the loop instead of ending at disposal.' },
-    B1: { title: 'Power Generation with CCUS', body: 'CO₂ can be captured from natural gas power facilities and used to support EOR operations.' },
-    B2: { title: 'DAC CO₂ to EOR', body: 'CO₂ captured at our DAC facilities can be used in our EOR operations to support advanced recovery and lower-carbon fuels.' },
-    B3: { title: 'DAC CO₂ to Storage', body: 'CO₂ captured at our DAC facilities can be stored in dedicated sequestration hubs to generate carbon dioxide removal credits that help address emissions.' },
-  }
+  // Copy comes from i18n: ecosystem.flowFamilies.<family> and ecosystem.flows.<id>.
+  const FLOW_FAMILY_LABEL = Object.fromEntries(['oil', 'power', 'water', 'co2'].map(f => [f, tr(`ecosystem.flowFamilies.${f}`)]))
+  const FLOW_COPY = Object.fromEntries(FLOW_LINES.map(l => [l.id, { title: tr(`ecosystem.flows.${l.id}.title`), body: tr(`ecosystem.flows.${l.id}.body`) }]))
 
   function flowCopyOf(line) {
     const A = facilities[line.from], B = facilities[line.to]
     return FLOW_COPY[line.id] || {
       title: FLOW_FAMILY_LABEL[line.family],
-      body: (A ? A.label : line.from) + ' → ' + (B ? B.label : line.to),
+      body: tr('ecosystem.flowFallback', { from: A ? A.label : line.from, to: B ? B.label : line.to }),
     }
   }
   function selectFlowLine(rec, point) {
@@ -2661,31 +2668,33 @@ export function createEcosystemScene(root, options = {}) {
   // Part panels for the DAC close-up (hover glow → click to learn). Short copy
   // on purpose; titles follow the real DAC process chain (contactor → pellet
   // reactor → calciner).
+  // Copy comes from i18n: ecosystem.parts.<name>; several model parts share one entry.
+  const partCopy = name => ({ title: tr(`ecosystem.parts.${name}.title`), body: tr(`ecosystem.parts.${name}.body`) })
   const PART_COPY = {
-    air1: { title: 'Air Contactor', body: 'Fans pull ambient air across a CO₂-binding solution — the first step of capture.' },
-    air2: { title: 'Air Contactor', body: 'Fans pull ambient air across a CO₂-binding solution — the first step of capture.' },
-    tower: { title: 'Calciner', body: 'Heats the captured carbonate to release a pure stream of CO₂, ready for compression and storage.' },
-    pellet: { title: 'Pellet Reactor', body: 'Binds the captured CO₂ into small carbonate pellets that feed the calciner.' },
-    fan: { title: 'Air Contactor', body: 'Fans pull ambient air across a CO₂-binding solution — the first step of capture.' }, // fans present as the contactor (reviewed copy)
+    air1: partCopy('airContactor'),
+    air2: partCopy('airContactor'),
+    tower: partCopy('calciner'),
+    pellet: partCopy('pelletReactor'),
+    fan: partCopy('airContactor'), // fans present as the contactor (reviewed copy)
     // EOR — CO₂ flood surface facility
-    eorwell: { title: 'Injection Well', body: 'Sends dense-phase CO₂ deep into the reservoir, sweeping oil the primary phase left behind.' },
-    eortowers: { title: 'Processing Towers', body: 'Strips CO₂ and gas liquids from the produced stream so the CO₂ can be recycled downhole.' },
-    eorsep: { title: 'Separation Facility', body: 'Uses three-phase separators to split production into oil, water and CO₂-rich gas.' },
-    eorcomp: { title: 'Gas Plant and Compression', body: 'Treats the CO₂-rich gas and compresses it back to injection pressure for reuse.' },
+    eorwell: partCopy('injectionWell'),
+    eortowers: partCopy('processingTowers'),
+    eorsep: partCopy('separationFacility'),
+    eorcomp: partCopy('gasPlant'),
     // Water Management — produced-water treatment loop
-    watclar: { title: 'Clarifiers', body: 'Slow-turning skimmers settle solids out of produced water — the first stage of treatment.' },
-    watchem: { title: 'Chemical Treatment', body: 'Dosing silos and mix tanks condition the water so contaminants drop out cleanly.' },
-    wattanks: { title: 'Storage and Recycle Tanks', body: 'Treated water is held here before heading back out to operations for reuse.' },
+    watclar: partCopy('clarifiers'),
+    watchem: partCopy('chemicalTreatment'),
+    wattanks: partCopy('storageTanks'),
     // Sequestration — permanent CO₂ storage site
-    seqwell: { title: 'Injection Wellhead', body: 'Controls the flow of CO₂ into the storage formation below.' },
-    seqpack: { title: 'CO₂ Receiving and Metering', body: 'Incoming CO₂ from the pipeline is filtered, measured and staged here for injection.' },
-    seqhut: { title: 'Monitoring Station', body: 'Instruments track pressure and verify the CO₂ stays exactly where it was put.' },
+    seqwell: partCopy('injectionWellhead'),
+    seqpack: partCopy('co2Receiving'),
+    seqhut: partCopy('monitoringStation'),
   }
   // The sequestration dot no longer changes the camera — it opens this story
   // about what's happening under the tile.
   const SEQ_DOT_COPY = {
-    title: 'Permanent Storage',
-    body: 'Injected CO₂ is stored in porous rock more than a mile down, where layers of impermeable caprock seal it in place.',
+    title: tr('ecosystem.storageStory.title'),
+    body: tr('ecosystem.storageStory.body'),
   }
   function partCopyFor(pk) {
     if (!pk) return null
@@ -2733,7 +2742,7 @@ export function createEcosystemScene(root, options = {}) {
 
   function renderCrumbs() {
     if (!crumbsEl) return
-    const items = [{ label: 'Overview', act: () => {
+    const items = [{ label: tr('ecosystem.panel.overview'), act: () => {
       tabButtons.forEach(b => b.classList.remove('active'))
       setPathway(null)
     } }]
@@ -2744,7 +2753,7 @@ export function createEcosystemScene(root, options = {}) {
       const k = focusedKey
       items.push({ label: facilities[k].label, act: () => focusFacility(k) }) // exits a close-up back to the facility
     }
-    if (hotspotActive) items.push({ label: 'Close-up', act: null })
+    if (hotspotActive) items.push({ label: tr('ecosystem.panel.closeUp'), act: null })
     crumbsEl.innerHTML = ''
     if (items.length === 1) { crumbsEl.classList.remove('on'); return }
     items.forEach((it, i) => {
@@ -2789,13 +2798,13 @@ export function createEcosystemScene(root, options = {}) {
     tourIdx = -1
     tourNextAt = -1 // advance on the next frame
     tourBtn.classList.add('playing')
-    tourBtn.innerHTML = '◼&nbsp;&nbsp;Stop tour'
+    tourBtn.textContent = '◼\u00A0\u00A0' + tr('ecosystem.panel.stopTour')
   }
   function cancelTour() {
     if (!tourActive) return
     tourActive = false
     tourBtn.classList.remove('playing')
-    tourBtn.innerHTML = '▶&nbsp;&nbsp;Play the story'
+    tourBtn.textContent = '▶\u00A0\u00A0' + tr('ecosystem.panel.playStory')
   }
   function updateTour(t) {
     if (!tourActive) return

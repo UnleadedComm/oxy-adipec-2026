@@ -29,6 +29,7 @@ const props = withDefaults(defineProps<{
 })
 
 const { t } = useI18n()
+const { dir } = useDirection()
 const root = useTemplateRef<HTMLElement>('root')
 
 const tabs = ['oilgas', 'power', 'water', 'co2'] as const
@@ -44,6 +45,10 @@ onMounted(async () => {
     modelUrl: props.modelUrl,
     dracoPath: props.dracoPath,
     fontFamily: getComputedStyle(root.value).fontFamily,
+    // All engine copy (facility/pathway/flow/part text, loader, crumbs) resolves
+    // through vue-i18n; keys live under ecosystem.* in i18n/locales/*.json.
+    t: (key: string, params?: Record<string, unknown>) => (params ? t(key, params) : t(key)),
+    dir: dir.value,
     config: props.config,
   })
 })
@@ -127,7 +132,7 @@ onBeforeUnmount(() => {
           id="dacHotspot"
           class="hotspot"
           style="display: none"
-          title="Take a closer look"
+          :title="t('ecosystem.hotspot.closerLook')"
         >
           <span class="hs-ring" />
           <span class="hs-ring hs-ring2" />
@@ -194,7 +199,7 @@ onBeforeUnmount(() => {
             <span
               id="infoTag"
               class="info-tag"
-            >Integration</span>
+            >{{ t('ecosystem.panel.integration') }}</span>
             <h4
               id="infoTitle"
               class="info-title"
@@ -214,7 +219,7 @@ onBeforeUnmount(() => {
                 href="#"
                 rel="noopener"
               >
-                <span id="infoLinkText">Explore</span>
+                <span id="infoLinkText">{{ t('ecosystem.panel.explore') }}</span>
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
@@ -232,7 +237,7 @@ onBeforeUnmount(() => {
                 class="tour-btn"
                 type="button"
               >
-                ▶&nbsp;&nbsp;Play the story
+                ▶&nbsp;&nbsp;{{ t('ecosystem.panel.playStory') }}
               </button>
             </div>
             <div
