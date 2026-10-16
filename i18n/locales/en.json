@@ -37,7 +37,210 @@
     },
     "hint": "Move your mouse to explore · Click a facility to zoom · Select a pathway above",
     "backToOverview": "Back to overview",
-    "loading": "Preparing scene…"
+    "loading": "Preparing scene…",
+    "loader": {
+      "startingEngine": "Starting engine…",
+      "error": "Could not load the ecosystem model — see console.",
+      "lines": {
+        "survey": "Surveying the site…",
+        "derrick": "Raising the derrick…",
+        "fans": "Spinning up the DAC fans…",
+        "clarifiers": "Filling the clarifiers…",
+        "pipelines": "Pressurizing pipelines…",
+        "flowLines": "Charging flow lines…",
+        "calciner": "Warming the calciner…",
+        "finalChecks": "Final checks…"
+      }
+    },
+    "panel": {
+      "integration": "Integration",
+      "explore": "Explore",
+      "playStory": "Play the story",
+      "stopTour": "Stop tour",
+      "overview": "Overview",
+      "closeUp": "Close-up"
+    },
+    "hotspot": {
+      "closerLook": "Take a closer look",
+      "underground": "What happens down here?"
+    },
+    "categories": {
+      "coreBusiness": "Core Business",
+      "lowCarbonVentures": "Low Carbon Ventures"
+    },
+    "chips": {
+      "rig": "Oil and Gas",
+      "midstream": "Midstream",
+      "eor": "EOR",
+      "power": "Power",
+      "water": "Water",
+      "dac": "DAC",
+      "lithium": "Lithium",
+      "sequestration": "Sequestration"
+    },
+    "facilities": {
+      "rig": {
+        "label": "Oil and Gas",
+        "desc": "We operate a balanced portfolio of conventional and unconventional resources across the United States, the Middle East and North Africa. Combined with advanced recovery expertise and targeted exploration, these assets provide more than 30 years of development opportunity."
+      },
+      "midstream": {
+        "label": "Midstream and Marketing",
+        "desc": "Our midstream and marketing business connects production to market through a network of gathering, processing, transportation and storage assets. These capabilities help move resources efficiently across our operations."
+      },
+      "eor": {
+        "label": "Enhanced Oil Recovery",
+        "desc": "Enhanced oil recovery is a core competitive advantage that combines CO₂ management, infrastructure and technical expertise to expand resource potential across our portfolio."
+      },
+      "power": {
+        "label": "Lower Carbon Power",
+        "desc": "Lower-carbon power and electrification is an important part of our integrated system, helping meet operational energy needs and creating opportunities to support growing demand from data centers and other power-intensive industries."
+      },
+      "water": {
+        "label": "Water Management",
+        "desc": "Water management supports production and advanced recovery across our integrated system. Through water treatment and recycling, we help maximize the use of existing resources while minimizing freshwater demand."
+      },
+      "dac": {
+        "label": "Direct Air Capture",
+        "desc": "As part of our integrated system, Direct Air Capture can support EOR or geologic sequestration, creating opportunities for lower-carbon products, fuels and carbon dioxide removal credits."
+      },
+      "sequestration": {
+        "label": "CO₂ Sequestration",
+        "desc": "Dedicated sequestration creates opportunities to store CO₂ from industrial sources and enable lower-carbon products. Leveraging our subsurface and CO₂ expertise, we help customers manage emissions through geologic storage."
+      },
+      "lithium": {
+        "label": "Lithium Production",
+        "desc": "We’re advancing direct lithium extraction technologies designed to produce high-purity lithium compounds from brines while supporting a more secure and reliable domestic supply of critical minerals."
+      }
+    },
+    "pathways": {
+      "oilgas": {
+        "title": "Oil and Gas",
+        "desc": "Oil and gas production is the core of our business. From primary production and enhanced oil recovery to midstream and marketing, water management, lower-carbon power and Direct Air Capture, our capabilities are connected through a system designed to get more from every asset.",
+        "link": "Explore Oil and Gas"
+      },
+      "power": {
+        "title": "Power",
+        "desc": "Reliable power is essential to our operations. Managing power as part of an integrated system helps support oil and gas production, enhanced oil recovery and Direct Air Capture while improving energy efficiency.",
+        "link": "Explore Power"
+      },
+      "water": {
+        "title": "Water",
+        "desc": "Water management is an important aspect of producing oil and gas. Moving, treating and reusing water is a critical part of supporting safe, reliable and efficient operations across our business.",
+        "link": "Explore Water Management"
+      },
+      "co2": {
+        "title": "CO₂",
+        "desc": "Oxy has a unique capability in managing, processing, transporting and storing CO₂. We leverage that expertise to support advanced recovery and to progress integrated technologies that expand opportunities across our business.",
+        "link": "Explore CO₂ and DAC"
+      }
+    },
+    "flowFamilies": {
+      "oil": "Crude & gas",
+      "power": "Low-carbon power",
+      "water": "Produced water",
+      "co2": "Captured CO₂"
+    },
+    "flowFallback": "{from} → {to}",
+    "flows": {
+      "G1": {
+        "title": "Oil and Gas to Midstream",
+        "body": "Our oil and gas production flows through our midstream and marketing business for gathering and transport to market."
+      },
+      "G2": {
+        "title": "EOR Barrels to Midstream",
+        "body": "Oil recovered with CO₂ moves through the same midstream network."
+      },
+      "R1": {
+        "title": "Powering Our Operations",
+        "body": "We manage power to our oil and gas operations. Natural gas can also be used to support power generation and lower-carbon power when paired with carbon capture."
+      },
+      "R2": {
+        "title": "Powering EOR",
+        "body": "Lower-carbon power helps support enhanced oil recovery operations, including through our Goldsmith Solar facility, which powers the Goldsmith EOR field in West Texas."
+      },
+      "R3": {
+        "title": "Powering Direct Air Capture",
+        "body": "Power for DAC will come from new renewable or low-emission sources, helping meet energy needs without reducing existing renewable power available on the grid."
+      },
+      "Y1": {
+        "title": "Produced Water Management",
+        "body": "Through treatment and recycling, we maximize use of produced water, helping reduce freshwater demand while supporting production and advanced recovery."
+      },
+      "Y2": {
+        "title": "Recycled Water to EOR",
+        "body": "Treated water heads back to the recovery field — closing the loop instead of ending at disposal."
+      },
+      "B1": {
+        "title": "Power Generation with CCUS",
+        "body": "CO₂ can be captured from natural gas power facilities and used to support EOR operations."
+      },
+      "B2": {
+        "title": "DAC CO₂ to EOR",
+        "body": "CO₂ captured at our DAC facilities can be used in our EOR operations to support advanced recovery and lower-carbon fuels."
+      },
+      "B3": {
+        "title": "DAC CO₂ to Storage",
+        "body": "CO₂ captured at our DAC facilities can be stored in dedicated sequestration hubs to generate carbon dioxide removal credits that help address emissions."
+      }
+    },
+    "parts": {
+      "airContactor": {
+        "title": "Air Contactor",
+        "body": "Fans pull ambient air across a CO₂-binding solution — the first step of capture."
+      },
+      "calciner": {
+        "title": "Calciner",
+        "body": "Heats the captured carbonate to release a pure stream of CO₂, ready for compression and storage."
+      },
+      "pelletReactor": {
+        "title": "Pellet Reactor",
+        "body": "Binds the captured CO₂ into small carbonate pellets that feed the calciner."
+      },
+      "injectionWell": {
+        "title": "Injection Well",
+        "body": "Sends dense-phase CO₂ deep into the reservoir, sweeping oil the primary phase left behind."
+      },
+      "processingTowers": {
+        "title": "Processing Towers",
+        "body": "Strips CO₂ and gas liquids from the produced stream so the CO₂ can be recycled downhole."
+      },
+      "separationFacility": {
+        "title": "Separation Facility",
+        "body": "Uses three-phase separators to split production into oil, water and CO₂-rich gas."
+      },
+      "gasPlant": {
+        "title": "Gas Plant and Compression",
+        "body": "Treats the CO₂-rich gas and compresses it back to injection pressure for reuse."
+      },
+      "clarifiers": {
+        "title": "Clarifiers",
+        "body": "Slow-turning skimmers settle solids out of produced water — the first stage of treatment."
+      },
+      "chemicalTreatment": {
+        "title": "Chemical Treatment",
+        "body": "Dosing silos and mix tanks condition the water so contaminants drop out cleanly."
+      },
+      "storageTanks": {
+        "title": "Storage and Recycle Tanks",
+        "body": "Treated water is held here before heading back out to operations for reuse."
+      },
+      "injectionWellhead": {
+        "title": "Injection Wellhead",
+        "body": "Controls the flow of CO₂ into the storage formation below."
+      },
+      "co2Receiving": {
+        "title": "CO₂ Receiving and Metering",
+        "body": "Incoming CO₂ from the pipeline is filtered, measured and staged here for injection."
+      },
+      "monitoringStation": {
+        "title": "Monitoring Station",
+        "body": "Instruments track pressure and verify the CO₂ stays exactly where it was put."
+      }
+    },
+    "storageStory": {
+      "title": "Permanent Storage",
+      "body": "Injected CO₂ is stored in porous rock more than a mile down, where layers of impermeable caprock seal it in place."
+    }
   },
   "fastFacts": {
     "eyebrow": "Fast Facts",
